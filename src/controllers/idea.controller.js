@@ -12,7 +12,7 @@ class IdeaController {
   }
 
   async getAll(req, res) {
-    const ideas = await _ideaServices.getAll();
+    const ideas = await _ideaService.getAll();
     return res.send(ideas);
   }
 
