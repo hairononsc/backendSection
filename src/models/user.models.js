@@ -11,20 +11,21 @@ const UserSchema = new Schema(
   },
   { timestamps: { createdAt: true, updatedAt: true } }
 );
-UserSchema.methods.toJSON =  function(){
-    let user = this.toObject();
-    delete user.password;
-    return user;
+
+UserSchema.methods.comparePasswords = function (password) {
+  return compareSync(password, this.password);
 };
 
-UserSchema.methods.comparePasswords =  function(password){
-    return compareSync(password, this.password);
-}
+UserSchema.methods.toJSON = function () {
+  let user = this.toObject();
+  delete user.password;
+  return user;
+};
 
 UserSchema.pre("save", async function (next) {
   const user = this;
 
-  if (user.isModified("password")) {
+  if (!user.isModified("password")) {
     return next();
   }
   const salt = genSaltSync(10);
